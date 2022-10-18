@@ -3,7 +3,7 @@ name = "cool-ip-api"
 version = "0.1.0"
 description = "A collections of wrapper for different IP info APIs"
 authors = ["sokripon <sokripon@gmail.com>"]
-repository = "https://github.com/sokirpon/cool-ip-api"
+repository = "https://github.com/sokripon/cool-ip-api"
 keywords = ["ip", "api", "wrapper", "ip-api", "ipinfo", "ipgeolocation", "ipdata"]
 readme = "README.md"
 
