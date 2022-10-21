@@ -99,18 +99,26 @@ class MyIpWTF(ResolverLimited):
             r = httpx.get(url, **httpx_args or {})
             return self.__post_request(r)
         elif ip_version == "combined":
-            ipv4 = self.resolve("ipv4", httpx_args)
-            ipv6 = self.resolve("ipv6", httpx_args)
+            try:
+                ipv4 = self.resolve("ipv4", httpx_args)
+            except httpx.ConnectError:
+                ipv4 = None
+            try:
+                ipv6 = self.resolve("ipv6", httpx_args)
+            except httpx.ConnectError:
+                ipv6 = None
+            if ipv4 is None and ipv6 is None:
+                raise httpx.ConnectError("Could not resolve any IP address")
 
             return MyIpWTFResponse(
-                YourFuckingIPv4Address=ipv4.YourFuckingIPv4Address,
-                YourFuckingIPv6Address=ipv6.YourFuckingIPv6Address,
-                YourFuckingLocation=ipv4.YourFuckingLocation,
-                YourFuckingv4Hostname=ipv4.YourFuckingv4Hostname,
-                YourFuckingv6Hostname=ipv6.YourFuckingv6Hostname,
-                YourFuckingISP=ipv4.YourFuckingISP,
-                YourFuckingTorExit=ipv4.YourFuckingTorExit,
-                YourFuckingCountryCode=ipv4.YourFuckingCountryCode,
+                YourFuckingIPv4Address=ipv4.YourFuckingIPv4Address if ipv4 else ipv4,
+                YourFuckingIPv6Address=ipv6.YourFuckingIPv6Address if ipv6 else ipv6,
+                YourFuckingLocation=ipv4.YourFuckingLocation if ipv4 else ipv6.YourFuckingLocation,
+                YourFuckingv4Hostname=ipv4.YourFuckingv4Hostname if ipv4 else ipv4,
+                YourFuckingv6Hostname=ipv6.YourFuckingv6Hostname if ipv6 else ipv6,
+                YourFuckingISP=ipv4.YourFuckingISP if ipv4 else ipv4.YourFuckingISP,
+                YourFuckingTorExit=ipv4.YourFuckingTorExit if ipv4 else ipv4.YourFuckingTorExit,
+                YourFuckingCountryCode=ipv4.YourFuckingCountryCode if ipv4 else ipv4.YourFuckingCountryCode,
             )
 
     async def async_resolve(self, ip_version: Literal["ipv4", "ipv6", "dualstack", "combined"],
@@ -140,15 +148,24 @@ class MyIpWTF(ResolverLimited):
                 r = await client.get(url, **httpx_args or {})
                 return self.__post_request(r)
         elif ip_version == "combined":
-            ipv4 = await self.async_resolve("ipv4", httpx_args)
-            ipv6 = await self.async_resolve("ipv6", httpx_args)
+            try:
+                ipv4 = await self.async_resolve("ipv4", httpx_args)
+            except httpx.ConnectError:
+                ipv4 = None
+            try:
+                ipv6 = await self.async_resolve("ipv6", httpx_args)
+            except httpx.ConnectError:
+                ipv6 = None
+            if ipv4 is None and ipv6 is None:
+                raise httpx.ConnectError("Could not resolve any IP address")
+
             return MyIpWTFResponse(
-                YourFuckingIPv4Address=ipv4.YourFuckingIPv4Address,
-                YourFuckingIPv6Address=ipv6.YourFuckingIPv6Address,
-                YourFuckingLocation=ipv4.YourFuckingLocation,
-                YourFuckingv4Hostname=ipv4.YourFuckingv4Hostname,
-                YourFuckingv6Hostname=ipv6.YourFuckingv6Hostname,
-                YourFuckingISP=ipv4.YourFuckingISP,
-                YourFuckingTorExit=ipv4.YourFuckingTorExit,
-                YourFuckingCountryCode=ipv4.YourFuckingCountryCode,
+                YourFuckingIPv4Address=ipv4.YourFuckingIPv4Address if ipv4 else ipv4,
+                YourFuckingIPv6Address=ipv6.YourFuckingIPv6Address if ipv6 else ipv6,
+                YourFuckingLocation=ipv4.YourFuckingLocation if ipv4 else ipv6.YourFuckingLocation,
+                YourFuckingv4Hostname=ipv4.YourFuckingv4Hostname if ipv4 else ipv4,
+                YourFuckingv6Hostname=ipv6.YourFuckingv6Hostname if ipv6 else ipv6,
+                YourFuckingISP=ipv4.YourFuckingISP if ipv4 else ipv4.YourFuckingISP,
+                YourFuckingTorExit=ipv4.YourFuckingTorExit if ipv4 else ipv4.YourFuckingTorExit,
+                YourFuckingCountryCode=ipv4.YourFuckingCountryCode if ipv4 else ipv4.YourFuckingCountryCode,
             )
