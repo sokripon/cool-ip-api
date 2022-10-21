@@ -74,6 +74,7 @@ class IPWhoIsIo(ResolverFull):
         :return: API Response as a pydantic model
         :rtype: IPWhoIsIoResponse
         """
+        ip = ip or ""
         url = f"{self.base_url}{ip}"
 
         r = httpx.get(url, **httpx_args or {})
@@ -87,6 +88,7 @@ class IPWhoIsIo(ResolverFull):
         :return: API Response as a pydantic model
         :rtype: IPWhoIsIoResponse
         """
+        ip = ip or ""
         url = f"{self.base_url}{ip}"
 
         async with httpx.AsyncClient() as client:

@@ -88,10 +88,10 @@ class IPAPICom(ResolverFull):
         :return: API Response as a pydantic model
         :rtype: IPAPIComResponse
         """
-
+        ip = ip or ""
         url = f"{self.base_url}json/{ip}?fields=66846719&lang={localization}"  # 66846719 is symbolic for all fields
-
         self.__pre_request()
+
         r = httpx.get(url, **httpx_args or {})
         return self.__post_request(r)
 
@@ -105,13 +105,10 @@ class IPAPICom(ResolverFull):
         :return: API Response as a pydantic model
         :rtype: IPAPIComResponse
         """
+        ip = ip or ""
         url = f"{self.base_url}json/{ip}?fields=66846719&lang={localization}"  # 66846719 is symbolic for all fields
 
         self.__pre_request()
         async with httpx.AsyncClient() as client:
             r = await client.get(url, **httpx_args or {})
             return self.__post_request(r)
-
-
-if __name__ == "__main__":
-    print(IPAPICom().resolve("1.1.1.1"))

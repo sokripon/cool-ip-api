@@ -36,12 +36,14 @@ class IPInfoIo(ResolverFull):
         self.api_key = api_key
 
     def resolve(self, ip: valid_ip_types = "", httpx_args: Optional[dict] = None) -> IPInfoIoResponse:
+        ip = ip or ""
         url = f"{self.base_url}{ip}?token={self.api_key}"
 
         r = httpx.get(url, **httpx_args or {})
         return IPInfoIoResponse(**r.json())
 
     async def async_resolve(self, ip: valid_ip_types = "", httpx_args: Optional[dict] = None) -> IPInfoIoResponse:
+        ip = ip or ""
         url = f"{self.base_url}{ip}"
 
         async with httpx.AsyncClient() as client:

@@ -101,9 +101,9 @@ class AbstractApiCom(ResolverFull):
         :return: API Response as a pydantic model
         :rtype: AbstractApiComResponse
         """
+        ip = ip or ""
         self.__pre_request()
         url = f"{self.base_url}?api_key={self.api_key}{f'&ip_address={ip}' if ip else ''}"
-        print(url)
 
         r = httpx.get(url, **httpx_args or {})
         return self.__post_request(r)
@@ -129,6 +129,7 @@ class AbstractApiCom(ResolverFull):
         :return: API Response as a pydantic model
         :rtype: AbstractApiComResponse
         """
+        ip = ip or ""
         self.__pre_request()
         url = f"{self.base_url}?api_key={self.api_key}{f'&ip_address={ip}' if ip else ''}"
 

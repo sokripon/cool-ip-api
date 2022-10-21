@@ -80,6 +80,7 @@ class IPApiCO(ResolverFull):
         :return: API Response as a pydantic model
         :rtype: IPApiCOResponse
         """
+        ip = ip or ""
         self.__pre_request()
         url = f"{self.base_url}{str(ip) + '/' if ip else ''}json/"
 
@@ -112,6 +113,7 @@ class IPApiCO(ResolverFull):
         :return: API Response as a pydantic model
         :rtype: IPApiCOResponse
         """
+        ip = ip or ""
         self.__pre_request()
         url = f"{self.base_url}{str(ip) + '/' if ip else ''}json/"
 
