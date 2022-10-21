@@ -7,13 +7,19 @@ from cool_ip_api import __version__
 
 def current_ip_v4():
     import httpx
-    ip = httpx.get("https://api4.ipify.org").text
+    try:
+        ip = httpx.get("https://api4.ipify.org").text
+    except httpx.ConnectError:
+        ip = None
     return ip
 
 
 def current_ip_v6():
     import httpx
-    ip = httpx.get("https://api6.ipify.org").text
+    try:
+        ip = httpx.get("https://api6.ipify.org").text
+    except httpx.ConnectError:
+        ip = None
     return ip
 
 
