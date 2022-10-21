@@ -10,7 +10,7 @@ from cool_ip_api.provider.resolver_abc import ResolverFull, valid_ip_types
 
 class IPInfoIoResponse(BaseModel):
     ip: str
-    hostname: str
+    hostname: Optional[str]
     city: str
     region: str
     country: str
