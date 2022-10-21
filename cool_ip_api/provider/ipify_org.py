@@ -34,7 +34,6 @@ class IpifyOrg(ResolverLimited):
     | Limit is infinite see https://www.ipify.org/
     | Commercial seems allowed? https://ipapi.co/pricing/
     """
-    # TODO: Add check if no ipv6 is available
 
     ipv4_url = "https://api4.ipify.org/?format=json"
     ipv6_url = "https://api6.ipify.org/?format=json"
@@ -62,9 +61,17 @@ class IpifyOrg(ResolverLimited):
             r = httpx.get(url, **httpx_args or {})
             return IpifyOrgResponse(**r.json())
         elif ip_version == "combined":
-            ipv4 = self.resolve("ipv4", httpx_args)
-            ipv6 = self.resolve("ipv6", httpx_args)
-            return IpifyOrgResponse(ipv4=ipv4.ipv4, ipv6=ipv6.ipv6)
+            try:
+                ipv4 = self.resolve("ipv4", httpx_args)
+            except httpx.ConnectError:
+                ipv4 = None
+            try:
+                ipv6 = self.resolve("ipv6", httpx_args)
+            except httpx.ConnectError:
+                ipv6 = None
+            if ipv4 is None and ipv6 is None:
+                raise httpx.ConnectError("Could not resolve any IP address")
+            return IpifyOrgResponse(ipv4=ipv4.ipv4 if ipv4 else ipv4, ipv6=ipv6.ipv6 if ipv6 else ipv6)
 
     async def async_resolve(self, ip_version: Literal["ipv4", "ipv6", "dualstack", "combined"],
                             httpx_args: Optional[dict] = None) \
@@ -92,6 +99,12 @@ class IpifyOrg(ResolverLimited):
                 r = await client.get(url, **httpx_args or {})
                 return IpifyOrgResponse(**r.json())
         elif ip_version == "combined":
-            ipv4 = await self.async_resolve("ipv4", httpx_args)
-            ipv6 = await self.async_resolve("ipv6", httpx_args)
-            return IpifyOrgResponse(ipv4=ipv4.ipv4, ipv6=ipv6.ipv6)
+            try:
+                ipv4 = await self.async_resolve("ipv4", httpx_args)
+            except httpx.ConnectError:
+                ipv4 = None
+            try:
+                ipv6 = await self.async_resolve("ipv6", httpx_args)
+            except httpx.ConnectError:
+                ipv6 = None
+            return IpifyOrgResponse(ipv4=ipv4.ipv4 if ipv4 else ipv4, ipv6=ipv6.ipv6 if ipv6 else ipv6)
